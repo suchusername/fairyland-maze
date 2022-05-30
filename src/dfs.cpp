@@ -42,20 +42,6 @@ static Direction inverse_direction(Direction direction) {
   }
 }
 
-static void move_character(Fairyland &fairyland, Character name,
-                           Direction direction) {
-  switch (name) {
-  case Character::Ivan:
-    fairyland.go(direction, Direction::Pass);
-    return;
-  case Character::Elena:
-    fairyland.go(Direction::Pass, direction);
-    return;
-  default:
-    throw std::runtime_error("Invalid character name.");
-  }
-}
-
 ForestMap::ForestMap()
     : data(map_size, std::vector<CellStatus>(map_size, CellStatus::Unknown)){};
 
