@@ -2,6 +2,9 @@
 
 #include <fairytale/fairy_tail.hpp>
 
+#include <stack>
+#include <vector>
+
 enum class CellStatus { Unknown, Free, Wall };
 
 struct Position {
@@ -24,4 +27,30 @@ private:
   std::vector<std::vector<CellStatus>> data;
 };
 
-ForestMap deep_first_search(Fairyland &fairyland, Character name);
+class DeepFirstSearch {
+public:
+  DeepFirstSearch(const Fairyland &fairyland, Character name);
+  ForestMap get_map_copy() const;
+
+  Direction get_move();
+
+private:
+  struct State {
+    State(Direction direction, bool is_free, bool move, bool exploring);
+    Direction direction;
+    bool is_free;
+    bool move;
+    bool exploring;
+  };
+
+  void process_state(const State &state);
+
+private:
+  std::stack<State> stack;
+  ForestMap map;
+  Position current_position;
+  State state;
+
+  const Fairyland &fairyland;
+  const Character name;
+};

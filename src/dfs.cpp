@@ -7,17 +7,6 @@
 static constexpr std::array<Direction, 4> directions{
     Direction::Up, Direction::Right, Direction::Down, Direction::Left};
 
-struct DirectionStatus {
-  DirectionStatus(Direction direction, bool is_free, bool move, bool exploring)
-      : direction{direction}, is_free{is_free}, move{move}, exploring{
-                                                                exploring} {};
-
-  Direction direction;
-  bool is_free;
-  bool move;
-  bool exploring;
-};
-
 static Position &operator+=(Position &pos, Direction direction) {
   switch (direction) {
   case Direction::Up:
@@ -108,46 +97,53 @@ void ForestMap::print() const {
   }
 }
 
-ForestMap deep_first_search(Fairyland &fairyland, Character name) {
-  auto map = ForestMap();
-  Position current_position{0, 0};
+DeepFirstSearch::State::State(Direction direction, bool is_free, bool move,
+                              bool exploring)
+    : direction{direction}, is_free{is_free}, move{move}, exploring{
+                                                              exploring} {};
 
-  std::stack<DirectionStatus> stack;
-  stack.emplace(Direction::Pass, true, false, false);
+DeepFirstSearch::DeepFirstSearch(const Fairyland &fairyland, Character name)
+    : stack{}, map(), current_position{0, 0},
+      state(Direction::Pass, true, false, false), fairyland{fairyland},
+      name{name} {};
+
+ForestMap DeepFirstSearch::get_map_copy() const { return this->map; }
+
+void DeepFirstSearch::process_state(const State &state) {
+  map[current_position] = state.is_free ? CellStatus::Free : CellStatus::Wall;
+  stack.emplace(inverse_direction(state.direction), true, state.is_free, false);
+
+  if (state.is_free) {
+    for (Direction direction : directions) {
+      Position new_position = current_position;
+      new_position += direction;
+      if (direction != inverse_direction(state.direction)) {
+        bool is_free = fairyland.canGo(name, direction);
+        stack.emplace(direction, is_free, is_free, true);
+      }
+    }
+  }
+}
+
+Direction DeepFirstSearch::get_move() {
+  if (map[current_position] == CellStatus::Unknown) {
+    process_state(state);
+  }
 
   while (!stack.empty()) {
-    DirectionStatus state = stack.top();
+    state = stack.top();
     stack.pop();
-    // std::cout << "(" << current_position.x << ", " << current_position.y
-    //           << "), direction=" << static_cast<char>(state.direction)
-    //           << ", is_free=" << state.is_free << ", move=" << state.move
-    //           << "\n";
 
     current_position += state.direction;
     if ((state.exploring) && (map[current_position] != CellStatus::Unknown)) {
       current_position += inverse_direction(state.direction);
     } else if (state.move) {
-      move_character(fairyland, name, state.direction);
+      return state.direction;
     }
 
     if (map[current_position] == CellStatus::Unknown) {
-      map[current_position] =
-          state.is_free ? CellStatus::Free : CellStatus::Wall;
-      stack.emplace(inverse_direction(state.direction), true, state.is_free,
-                    false);
-
-      if (state.is_free) {
-        for (Direction direction : directions) {
-          Position new_position = current_position;
-          new_position += direction;
-          if (direction != inverse_direction(state.direction)) {
-            bool is_free = fairyland.canGo(name, direction);
-            stack.emplace(direction, is_free, is_free, true);
-          }
-        }
-      }
+      process_state(state);
     }
   }
-
-  return map;
-}
+  return Direction::Pass;
+};

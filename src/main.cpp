@@ -1,46 +1,24 @@
 #include <fairyland/fairyland.h>
 #include <fairytale/fairy_tail.hpp>
 
-#include <cstdlib>
-#include <ctime>
+int main() {
+  Fairyland fairyland;
 
-int walk() {
-  Fairyland world;
+  DeepFirstSearch dfs_ivan(fairyland, Character::Ivan);
+  DeepFirstSearch dfs_elena(fairyland, Character::Elena);
 
-  for (int i = 0; i < 10000; ++i) {
-    Direction direction;
-
-    switch (rand() % 4) {
-    case 0:
-      direction = Direction::Up;
-      break;
-
-    case 1:
-      direction = Direction::Down;
-      break;
-
-    case 2:
-      direction = Direction::Left;
-      break;
-
-    default:
-      direction = Direction::Right;
-      break;
-    }
-
-    if (world.canGo(Character::Ivan, direction) &&
-        world.go(direction, Direction::Pass))
-      return world.getTurnCount();
+  for (size_t i = 0; i < 200; ++i) {
+    Direction direction_ivan = dfs_ivan.get_move();
+    Direction direction_elena = dfs_elena.get_move();
+    fairyland.go(direction_ivan, direction_elena);
   }
 
-  return 0;
-}
+  ForestMap map_ivan = dfs_ivan.get_map_copy();
+  ForestMap map_elena = dfs_elena.get_map_copy();
 
-int main() {
-
-  Fairyland fairyland;
-  auto map = deep_first_search(fairyland, Character::Ivan);
-  map.print();
+  map_ivan.print();
+  std::cout << "\n";
+  map_elena.print();
 
   return 0;
 }
