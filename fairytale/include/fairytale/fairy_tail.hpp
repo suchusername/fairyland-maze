@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 
-
 enum class Character {
   Ivan,
   Elena,

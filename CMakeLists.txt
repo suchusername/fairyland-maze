@@ -5,6 +5,7 @@ add_subdirectory(fairytale)
 
 add_library(fairyland STATIC
     src/fairyland_impl.cpp
+    src/dfs.cpp
 )
 target_include_directories(fairyland PUBLIC include)
 target_link_libraries(fairyland PRIVATE fairytale)

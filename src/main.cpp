@@ -1,3 +1,4 @@
+#include <fairyland/fairyland.h>
 #include <fairytale/fairy_tail.hpp>
 
 #include <cstdlib>
@@ -36,12 +37,10 @@ int walk() {
 }
 
 int main() {
-  srand(static_cast<unsigned int>(time(nullptr)));
 
-  if (const int turns = walk())
-    std::cout << "Found in " << turns << " turns" << std::endl;
-  else
-    std::cout << "Not found" << std::endl;
+  Fairyland fairyland;
+  auto map = deep_first_search(fairyland, Character::Ivan);
+  map.print();
 
   return 0;
 }
