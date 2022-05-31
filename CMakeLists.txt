@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(fairytale)
 
 add_library(fairyland STATIC
-    src/mapping.cpp
+    src/forest_map.cpp
     src/dfs.cpp
 )
 target_include_directories(fairyland PUBLIC include)

@@ -59,8 +59,8 @@ const CellStatus &ForestMap::operator[](const Position &pos) const {
       (pos.y > grid_size)) {
     throw std::runtime_error("Invalid position.");
   }
-  return this->data[static_cast<size_t>(pos.x + grid_size)]
-                   [static_cast<size_t>(pos.y + grid_size)];
+  return this->data[static_cast<size_t>(pos.y + grid_size)]
+                   [static_cast<size_t>(pos.x + grid_size)];
 }
 
 void ForestMap::print() const {
