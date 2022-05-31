@@ -12,16 +12,14 @@ git clone https://github.com/suchusername/fairyland-maze.git
 ```
 cd fairyland-maze
 mkdir build
-cd build
 ```
-Из этой папки сконфигурировать проект через `cmake`, а затем собрать его:
+В этой папке сконфигурировать проект через `cmake`, а затем собрать его:
 ```
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build .
+cmake . -DCMAKE_BUILD_TYPE=Release -Bbuild
+cmake --build build
 ```
 Из корня репозитория запустить исполняемый файл:
 ```
-cd ..
 ./build/fairyland_go
 ```
 
