@@ -2,10 +2,14 @@
 
 static bool are_maps_equal(const ForestMap &lhs, const ForestMap &rhs,
                            const Position &rhs_offset) {
-  int x_min = std::max(-lhs.grid_size, rhs_offset.x - lhs.grid_size);
-  int x_max = std::min(lhs.grid_size, lhs.grid_size + rhs_offset.x);
-  int y_min = std::max(-lhs.grid_size, rhs_offset.y - lhs.grid_size);
-  int y_max = std::min(lhs.grid_size, lhs.grid_size + rhs_offset.y);
+  int x_min =
+      std::max(-ForestMap::grid_size, rhs_offset.x - ForestMap::grid_size);
+  int x_max =
+      std::min(ForestMap::grid_size, ForestMap::grid_size + rhs_offset.x);
+  int y_min =
+      std::max(-ForestMap::grid_size, rhs_offset.y - ForestMap::grid_size);
+  int y_max =
+      std::min(ForestMap::grid_size, ForestMap::grid_size + rhs_offset.y);
   for (int x = x_min; x <= x_max; ++x) {
     for (int y = y_min; y <= y_max; ++y) {
       if (lhs[{x, y}] != rhs[{x - rhs_offset.x, y - rhs_offset.y}]) {
@@ -34,10 +38,14 @@ std::optional<Position> find_offset_between_equal_maps(const ForestMap &lhs,
 
 static bool are_maps_mergable(const ForestMap &lhs, const ForestMap &rhs,
                               const Position &rhs_offset) {
-  int x_min = std::max(-lhs.grid_size, rhs_offset.x - lhs.grid_size);
-  int x_max = std::min(lhs.grid_size, lhs.grid_size + rhs_offset.x);
-  int y_min = std::max(-lhs.grid_size, rhs_offset.y - lhs.grid_size);
-  int y_max = std::min(lhs.grid_size, lhs.grid_size + rhs_offset.y);
+  int x_min =
+      std::max(-ForestMap::grid_size, rhs_offset.x - ForestMap::grid_size);
+  int x_max =
+      std::min(ForestMap::grid_size, ForestMap::grid_size + rhs_offset.x);
+  int y_min =
+      std::max(-ForestMap::grid_size, rhs_offset.y - ForestMap::grid_size);
+  int y_max =
+      std::min(ForestMap::grid_size, ForestMap::grid_size + rhs_offset.y);
   for (int x = x_min; x <= x_max; ++x) {
     for (int y = y_min; y <= y_max; ++y) {
       CellStatus lhs_val = lhs[{x, y}];
@@ -92,7 +100,7 @@ void write_ivan_and_elena_positions(ForestMap &map_ivan,
 }
 
 void write_second_map_onto_first(ForestMap &lhs, const ForestMap &rhs,
-                                const std::optional<Position> &rhs_offset) {
+                                 const std::optional<Position> &rhs_offset) {
   Position offset;
   if (!rhs_offset.has_value()) {
     // maps are not equal => they are guaranteed to be mergable
