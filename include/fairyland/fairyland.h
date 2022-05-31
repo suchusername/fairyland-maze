@@ -32,6 +32,9 @@ public:
   std::optional<std::vector<Direction>>
   find_shortest_path_from_origin(const Position &dst) const;
 
+  int smallest_known_x() const;
+  int smallest_known_y() const;
+
   void print() const;
 
 public:
@@ -72,3 +75,7 @@ private:
 
 std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
                                                  const ForestMap &rhs);
+
+std::vector<std::vector<CellStatus>>
+combine_maps(const ForestMap &lhs, const ForestMap &rhs,
+             const std::optional<Position> &rhs_offset);

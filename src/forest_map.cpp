@@ -97,6 +97,36 @@ ForestMap::find_shortest_path_from_origin(const Position &dst) const {
   return path;
 }
 
+int ForestMap::smallest_known_x() const {
+  for (int x = -ForestMap::grid_size; x <= ForestMap::grid_size; ++x) {
+    bool has_known_cell = false;
+    for (int y = -ForestMap::grid_size; y <= ForestMap::grid_size; ++y) {
+      if ((*this)[{x, y}] != CellStatus::Unknown) {
+        has_known_cell = true;
+      }
+    }
+    if (has_known_cell) {
+      return x;
+    }
+  }
+  throw std::runtime_error("No cells are known.");
+}
+
+int ForestMap::smallest_known_y() const {
+  for (int y = -ForestMap::grid_size; y <= ForestMap::grid_size; ++y) {
+    bool has_known_cell = false;
+    for (int x = -ForestMap::grid_size; x <= ForestMap::grid_size; ++x) {
+      if ((*this)[{x, y}] != CellStatus::Unknown) {
+        has_known_cell = true;
+      }
+    }
+    if (has_known_cell) {
+      return y;
+    }
+  }
+  throw std::runtime_error("No cells are known.");
+}
+
 static bool are_maps_equal(const ForestMap &lhs, const ForestMap &rhs,
                            const Position &rhs_offset) {
   int x_min = std::max(-lhs.grid_size, rhs_offset.x - lhs.grid_size);
@@ -115,7 +145,6 @@ static bool are_maps_equal(const ForestMap &lhs, const ForestMap &rhs,
 
 std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
                                                  const ForestMap &rhs) {
-
   constexpr int min_offset{1 - ForestMap::grid_size};
   constexpr int max_offset{ForestMap::grid_size - 1};
 
@@ -127,6 +156,12 @@ std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
       }
     }
   }
-
   return std::nullopt;
+}
+
+std::vector<std::vector<CellStatus>>
+combine_maps(const ForestMap &lhs, const ForestMap &rhs,
+             const std::optional<Position> &rhs_offset) {
+  if (rhs_offset.has_value()) {
+  }
 }
