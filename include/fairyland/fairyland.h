@@ -86,9 +86,8 @@ private:
 std::optional<Position> find_offset_between_equal_maps(const ForestMap &lhs,
                                                        const ForestMap &rhs);
 
-void
-write_second_map_onto_first(ForestMap &lhs, const ForestMap &rhs,
-                           const std::optional<Position> &rhs_offset);
+void write_second_map_onto_first(ForestMap &lhs, const ForestMap &rhs,
+                                 const std::optional<Position> &rhs_offset);
 
 std::vector<std::vector<CellStatus>> crop_map(const ForestMap &map);
 

@@ -153,8 +153,6 @@ ForestMap::get_subgrid_copy(int x_min, int y_min, int width, int height) const {
   return subgrid;
 }
 
-
-
 void print_map(const std::vector<std::vector<CellStatus>> &map) {
   for (const auto &row : map) {
     for (const auto &elem : row) {
