@@ -91,9 +91,7 @@ find_offset_between_mergable_maps(const ForestMap &lhs, const ForestMap &rhs) {
 
 void write_ivan_and_elena_positions(ForestMap &map_ivan,
                                     const Position &elena_offset) {
-  int x_min = map_ivan.smallest_known_x() + 1;
-  int y_min = map_ivan.smallest_known_y() + 1;
-  Position ivan{-x_min, -y_min};
+  Position ivan{0, 0};
   Position elena{ivan.x + elena_offset.x, ivan.y + elena_offset.y};
   map_ivan[ivan] = CellStatus::Ivan;
   map_ivan[elena] = CellStatus::Elena;
