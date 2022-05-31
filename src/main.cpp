@@ -18,22 +18,33 @@ int main() {
 
   auto elena_pos = find_offset_between_maps(map_ivan, map_elena);
 
-  if (elena_pos.has_value()) {
-    std::cout << elena_pos->x << " " << elena_pos->y << std::endl;
+  if (!elena_pos.has_value()) {
+    std::cout << "Ivan cannot reach Elena." << std::endl;
   } else {
-    std::cout << "no\n";
+    auto shortest_path =
+        map_ivan.find_shortest_path_from_origin(elena_pos.value()).value();
+
+    bool met{false};
+    for (size_t idx = 0; 2 * idx <= shortest_path.size(); ++idx) {
+      Direction ivan_move = shortest_path[idx];
+      Direction elena_move =
+          inverse_direction(shortest_path[shortest_path.size() - 1 - idx]);
+      met = fairyland.go(ivan_move, elena_move);
+      if (met) {
+        break;
+      }
+    }
+
+    if (met) {
+      std::cout << "Ivan and Elena met in " << fairyland.getTurnCount()
+                << " moves." << std::endl;
+    } else {
+      std::cout << "Ivan still cannot reach Elena." << std::endl;
+    }
   }
 
-  auto shortest_path =
-      map_ivan.find_shortest_path_from_origin(elena_pos.value());
-  for (Direction direction : shortest_path.value()) {
-    std::cout << (char)direction;
-  }
-  std::cout << "\n";
-
-  // map_ivan.print();
-  // std::cout << "\n";
-  // map_elena.print();
+  auto final_map = combine_maps(map_ivan, map_elena, elena_pos);
+  print_map(final_map);
 
   return 0;
 }

@@ -25,26 +25,6 @@ const CellStatus &ForestMap::operator[](const Position &pos) const {
                    [static_cast<size_t>(pos.x + grid_size)];
 }
 
-void ForestMap::print() const {
-  auto convert = [](CellStatus status) {
-    switch (status) {
-    case CellStatus::Unknown:
-      return "?";
-    case CellStatus::Free:
-      return ".";
-    default:
-      return "#";
-    }
-  };
-
-  for (const auto &row : this->data) {
-    for (const auto &elem : row) {
-      std::cout << convert(elem);
-    }
-    std::cout << std::endl;
-  }
-}
-
 struct PositionHash {
   size_t operator()(const Position &pos) const {
     return ((uint64_t)pos.x) << 32 | (uint64_t)pos.y;
@@ -127,6 +107,22 @@ int ForestMap::smallest_known_y() const {
   throw std::runtime_error("No cells are known.");
 }
 
+void ForestMap::print() const { print_map(this->data); }
+
+std::vector<std::vector<CellStatus>>
+ForestMap::get_subgrid_copy(int x_min, int y_min, int width, int height) const {
+  std::vector<std::vector<CellStatus>> subgrid(
+      static_cast<size_t>(height),
+      std::vector<CellStatus>(static_cast<size_t>(width)));
+  for (int x = x_min; x < x_min + width; ++x) {
+    for (int y = y_min; y < y_min + height; ++y) {
+      subgrid[static_cast<size_t>(y - y_min)][static_cast<size_t>(x - x_min)] =
+          (*this)[{x, y}];
+    }
+  }
+  return subgrid;
+}
+
 static bool are_maps_equal(const ForestMap &lhs, const ForestMap &rhs,
                            const Position &rhs_offset) {
   int x_min = std::max(-lhs.grid_size, rhs_offset.x - lhs.grid_size);
@@ -159,9 +155,26 @@ std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
   return std::nullopt;
 }
 
+void print_map(const std::vector<std::vector<CellStatus>> &map) {
+  for (const auto &row : map) {
+    for (const auto &elem : row) {
+      std::cout << static_cast<char>(elem);
+    }
+    std::cout << std::endl;
+  }
+}
+
 std::vector<std::vector<CellStatus>>
 combine_maps(const ForestMap &lhs, const ForestMap &rhs,
              const std::optional<Position> &rhs_offset) {
+  int x_min = lhs.smallest_known_x() + 1;
+  int y_min = lhs.smallest_known_y() + 1;
+  auto map = lhs.get_subgrid_copy(x_min, y_min, lhs.grid_size, lhs.grid_size);
+  map[static_cast<size_t>(-y_min)][static_cast<size_t>(-x_min)] =
+      CellStatus::Ivan;
+
   if (rhs_offset.has_value()) {
+    return map;
   }
+  return map;
 }

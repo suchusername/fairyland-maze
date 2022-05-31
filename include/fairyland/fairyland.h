@@ -7,7 +7,13 @@
 #include <stack>
 #include <vector>
 
-enum class CellStatus { Unknown, Free, Wall };
+enum class CellStatus : char {
+  Unknown = '?',
+  Free = '.',
+  Wall = '#',
+  Ivan = '@',
+  Elena = '&',
+};
 
 constexpr std::array<Direction, 4> moving_directions{
     Direction::Up, Direction::Right, Direction::Down, Direction::Left};
@@ -34,6 +40,8 @@ public:
 
   int smallest_known_x() const;
   int smallest_known_y() const;
+  std::vector<std::vector<CellStatus>>
+  get_subgrid_copy(int x_min, int y_min, int width, int height) const;
 
   void print() const;
 
@@ -79,3 +87,5 @@ std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
 std::vector<std::vector<CellStatus>>
 combine_maps(const ForestMap &lhs, const ForestMap &rhs,
              const std::optional<Position> &rhs_offset);
+
+void print_map(const std::vector<std::vector<CellStatus>> &map);
