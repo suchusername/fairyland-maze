@@ -40,6 +40,8 @@ public:
 
   int smallest_known_x() const;
   int smallest_known_y() const;
+  int biggest_known_x() const;
+  int biggest_known_y() const;
   std::vector<std::vector<CellStatus>>
   get_subgrid_copy(int x_min, int y_min, int width, int height) const;
 
@@ -85,7 +87,7 @@ std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
                                                  const ForestMap &rhs);
 
 std::vector<std::vector<CellStatus>>
-combine_maps(const ForestMap &lhs, const ForestMap &rhs,
+combine_maps(ForestMap &lhs, const ForestMap &rhs,
              const std::optional<Position> &rhs_offset);
 
 void print_map(const std::vector<std::vector<CellStatus>> &map);
