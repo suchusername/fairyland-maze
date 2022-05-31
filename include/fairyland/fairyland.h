@@ -83,11 +83,13 @@ private:
   const Character name;
 };
 
-std::optional<Position> find_offset_between_maps(const ForestMap &lhs,
-                                                 const ForestMap &rhs);
+std::optional<Position> find_offset_between_equal_maps(const ForestMap &lhs,
+                                                       const ForestMap &rhs);
 
-std::vector<std::vector<CellStatus>>
-combine_maps(ForestMap &lhs, const ForestMap &rhs,
-             const std::optional<Position> &rhs_offset);
+void
+write_second_map_onto_first(ForestMap &lhs, const ForestMap &rhs,
+                           const std::optional<Position> &rhs_offset);
+
+std::vector<std::vector<CellStatus>> crop_map(const ForestMap &map);
 
 void print_map(const std::vector<std::vector<CellStatus>> &map);

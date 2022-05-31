@@ -16,7 +16,7 @@ int main() {
   ForestMap map_ivan = dfs_ivan.get_map_copy();
   ForestMap map_elena = dfs_elena.get_map_copy();
 
-  auto elena_pos = find_offset_between_maps(map_ivan, map_elena);
+  auto elena_pos = find_offset_between_equal_maps(map_ivan, map_elena);
 
   if (!elena_pos.has_value()) {
     std::cout << "Ivan cannot reach Elena." << std::endl;
@@ -43,8 +43,9 @@ int main() {
     }
   }
 
-  auto final_map = combine_maps(map_ivan, map_elena, elena_pos);
-  print_map(final_map);
+  write_second_map_onto_first(map_ivan, map_elena, elena_pos);
+  auto final_map = crop_map(map_ivan);
 
+  print_map(final_map);
   return 0;
 }
