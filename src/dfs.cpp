@@ -1,33 +1,33 @@
 #include <fairyland/fairyland.h>
 
-#include <array> // std::array
 #include <iostream>
 #include <stack> // std::stack
 
-static constexpr std::array<Direction, 4> directions{
-    Direction::Up, Direction::Right, Direction::Down, Direction::Left};
+bool Position::operator==(const Position &other) const {
+  return (this->x == other.x) && (this->y == other.y);
+}
 
-static Position &operator+=(Position &pos, Direction direction) {
+Position &Position::operator+=(Direction direction) {
   switch (direction) {
   case Direction::Up:
-    pos.y--;
+    this->y--;
     break;
   case Direction::Right:
-    pos.x++;
+    this->x++;
     break;
   case Direction::Down:
-    pos.y++;
+    this->y++;
     break;
   case Direction::Left:
-    pos.x--;
+    this->x--;
     break;
   default:
     break;
   }
-  return pos;
+  return *this;
 }
 
-static Direction inverse_direction(Direction direction) {
+Direction inverse_direction(Direction direction) {
   switch (direction) {
   case Direction::Up:
     return Direction::Down;
@@ -42,49 +42,8 @@ static Direction inverse_direction(Direction direction) {
   }
 }
 
-ForestMap::ForestMap()
-    : data(map_size, std::vector<CellStatus>(map_size, CellStatus::Unknown)){};
-
-CellStatus &ForestMap::operator[](const Position &pos) {
-  if ((pos.x < -grid_size) || (pos.y < -grid_size) || (pos.x > grid_size) ||
-      (pos.y > grid_size)) {
-    throw std::runtime_error("Invalid position.");
-  }
-  return this->data[static_cast<size_t>(pos.y + grid_size)]
-                   [static_cast<size_t>(pos.x + grid_size)];
-}
-
-const CellStatus &ForestMap::operator[](const Position &pos) const {
-  if ((pos.x < -grid_size) || (pos.y < -grid_size) || (pos.x > grid_size) ||
-      (pos.y > grid_size)) {
-    throw std::runtime_error("Invalid position.");
-  }
-  return this->data[static_cast<size_t>(pos.y + grid_size)]
-                   [static_cast<size_t>(pos.x + grid_size)];
-}
-
-void ForestMap::print() const {
-  auto convert = [](CellStatus status) {
-    switch (status) {
-    case CellStatus::Unknown:
-      return "?";
-    case CellStatus::Free:
-      return ".";
-    default:
-      return "#";
-    }
-  };
-
-  for (const auto &row : this->data) {
-    for (const auto &elem : row) {
-      std::cout << convert(elem);
-    }
-    std::cout << std::endl;
-  }
-}
-
 DepthFirstSearch::State::State(Direction direction, bool is_free, bool move,
-                              bool exploring)
+                               bool exploring)
     : direction{direction}, is_free{is_free}, move{move}, exploring{
                                                               exploring} {};
 
@@ -100,7 +59,7 @@ void DepthFirstSearch::process_state(const State &state) {
   stack.emplace(inverse_direction(state.direction), true, state.is_free, false);
 
   if (state.is_free) {
-    for (Direction direction : directions) {
+    for (Direction direction : moving_directions) {
       Position new_position = current_position;
       new_position += direction;
       if (direction != inverse_direction(state.direction)) {

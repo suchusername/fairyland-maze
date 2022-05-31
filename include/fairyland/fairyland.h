@@ -2,15 +2,24 @@
 
 #include <fairytale/fairy_tail.hpp>
 
+#include <array>
 #include <optional>
 #include <stack>
 #include <vector>
 
 enum class CellStatus { Unknown, Free, Wall };
 
+constexpr std::array<Direction, 4> moving_directions{
+    Direction::Up, Direction::Right, Direction::Down, Direction::Left};
+
+Direction inverse_direction(Direction direction);
+
 struct Position {
   int x;
   int y;
+
+  bool operator==(const Position &other) const;
+  Position &operator+=(Direction direction);
 };
 
 class ForestMap {
@@ -19,6 +28,9 @@ public:
 
   CellStatus &operator[](const Position &pos);
   const CellStatus &operator[](const Position &pos) const;
+
+  std::optional<std::vector<Direction>>
+  find_shortest_path_from_origin(const Position &dst) const;
 
   void print() const;
 

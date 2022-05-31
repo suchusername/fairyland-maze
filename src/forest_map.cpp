@@ -1,5 +1,102 @@
 #include <fairyland/fairyland.h>
 
+#include <algorithm> // std::reverse
+#include <queue>
+#include <unordered_map>
+
+ForestMap::ForestMap()
+    : data(map_size, std::vector<CellStatus>(map_size, CellStatus::Unknown)){};
+
+CellStatus &ForestMap::operator[](const Position &pos) {
+  if ((pos.x < -grid_size) || (pos.y < -grid_size) || (pos.x > grid_size) ||
+      (pos.y > grid_size)) {
+    throw std::runtime_error("Invalid position.");
+  }
+  return this->data[static_cast<size_t>(pos.y + grid_size)]
+                   [static_cast<size_t>(pos.x + grid_size)];
+}
+
+const CellStatus &ForestMap::operator[](const Position &pos) const {
+  if ((pos.x < -grid_size) || (pos.y < -grid_size) || (pos.x > grid_size) ||
+      (pos.y > grid_size)) {
+    throw std::runtime_error("Invalid position.");
+  }
+  return this->data[static_cast<size_t>(pos.y + grid_size)]
+                   [static_cast<size_t>(pos.x + grid_size)];
+}
+
+void ForestMap::print() const {
+  auto convert = [](CellStatus status) {
+    switch (status) {
+    case CellStatus::Unknown:
+      return "?";
+    case CellStatus::Free:
+      return ".";
+    default:
+      return "#";
+    }
+  };
+
+  for (const auto &row : this->data) {
+    for (const auto &elem : row) {
+      std::cout << convert(elem);
+    }
+    std::cout << std::endl;
+  }
+}
+
+struct PositionHash {
+  size_t operator()(const Position &pos) const {
+    return ((uint64_t)pos.x) << 32 | (uint64_t)pos.y;
+  }
+};
+
+std::optional<std::vector<Direction>>
+ForestMap::find_shortest_path_from_origin(const Position &dst) const {
+  std::unordered_map<Position, std::pair<Position, Direction>, PositionHash>
+      explored;
+
+  std::queue<Position> queue;
+
+  Position origin{0, 0};
+  explored.insert({origin, {origin, Direction::Pass}});
+  queue.push(origin);
+
+  // Breadth-first search
+  while (!queue.empty()) {
+    Position pos = queue.front();
+    queue.pop();
+    if ((dst.x == pos.x) && (dst.y == pos.y)) {
+      break;
+    }
+
+    for (Direction direction : moving_directions) {
+      Position next = pos;
+      next += direction;
+      if (((*this)[next] == CellStatus::Free) &&
+          (explored.find(next) == explored.end())) {
+        explored.insert({next, {pos, direction}});
+        queue.push(next);
+      }
+    }
+  }
+
+  // recovering the shortest path
+  std::vector<Direction> path;
+  auto prev_itr = explored.find(dst);
+  while ((prev_itr != explored.end()) &&
+         (prev_itr->second.second != Direction::Pass)) {
+    path.push_back(prev_itr->second.second);
+    prev_itr = explored.find(prev_itr->second.first);
+  }
+
+  if (path.empty()) {
+    return std::nullopt;
+  }
+  std::reverse(path.begin(), path.end());
+  return path;
+}
+
 static bool are_maps_equal(const ForestMap &lhs, const ForestMap &rhs,
                            const Position &rhs_offset) {
   int x_min = std::max(-lhs.grid_size, rhs_offset.x - lhs.grid_size);

@@ -24,6 +24,13 @@ int main() {
     std::cout << "no\n";
   }
 
+  auto shortest_path =
+      map_ivan.find_shortest_path_from_origin(elena_pos.value());
+  for (Direction direction : shortest_path.value()) {
+    std::cout << (char)direction;
+  }
+  std::cout << "\n";
+
   // map_ivan.print();
   // std::cout << "\n";
   // map_elena.print();
