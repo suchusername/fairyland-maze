@@ -30,9 +30,9 @@ private:
   std::vector<std::vector<CellStatus>> data;
 };
 
-class DeepFirstSearch {
+class DepthFirstSearch {
 public:
-  DeepFirstSearch(const Fairyland &fairyland, Character name);
+  DepthFirstSearch(const Fairyland &fairyland, Character name);
   ForestMap get_map_copy() const;
 
   Direction get_move();

@@ -83,19 +83,19 @@ void ForestMap::print() const {
   }
 }
 
-DeepFirstSearch::State::State(Direction direction, bool is_free, bool move,
+DepthFirstSearch::State::State(Direction direction, bool is_free, bool move,
                               bool exploring)
     : direction{direction}, is_free{is_free}, move{move}, exploring{
                                                               exploring} {};
 
-DeepFirstSearch::DeepFirstSearch(const Fairyland &fairyland, Character name)
+DepthFirstSearch::DepthFirstSearch(const Fairyland &fairyland, Character name)
     : stack{}, map(), current_position{0, 0},
       state(Direction::Pass, true, false, false), fairyland{fairyland},
       name{name} {};
 
-ForestMap DeepFirstSearch::get_map_copy() const { return this->map; }
+ForestMap DepthFirstSearch::get_map_copy() const { return this->map; }
 
-void DeepFirstSearch::process_state(const State &state) {
+void DepthFirstSearch::process_state(const State &state) {
   map[current_position] = state.is_free ? CellStatus::Free : CellStatus::Wall;
   stack.emplace(inverse_direction(state.direction), true, state.is_free, false);
 
@@ -111,7 +111,7 @@ void DeepFirstSearch::process_state(const State &state) {
   }
 }
 
-Direction DeepFirstSearch::get_move() {
+Direction DepthFirstSearch::get_move() {
   if (map[current_position] == CellStatus::Unknown) {
     process_state(state);
   }

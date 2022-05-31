@@ -4,8 +4,8 @@
 int main() {
   Fairyland fairyland;
 
-  DeepFirstSearch dfs_ivan(fairyland, Character::Ivan);
-  DeepFirstSearch dfs_elena(fairyland, Character::Elena);
+  DepthFirstSearch dfs_ivan(fairyland, Character::Ivan);
+  DepthFirstSearch dfs_elena(fairyland, Character::Elena);
 
   for (size_t i = 0; i < 200; ++i) {
     Direction direction_ivan = dfs_ivan.get_move();
