@@ -4,6 +4,8 @@
 
 # Установка и запуск
 
+### Инструкция по установке на Linux/MacOS:
+
 Выкачать репозиторий:
 ```
 git clone https://github.com/suchusername/fairyland-maze.git
